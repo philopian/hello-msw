@@ -1,5 +1,7 @@
 # Simple MSW example
 
+<img src="./screenshot.jpg">
+
 - A toggle button to turn Mock Service Workers on/off
 - A Banner at the top of the page to inform the user that all the http calls will be intercepted
 
