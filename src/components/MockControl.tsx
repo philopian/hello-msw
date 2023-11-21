@@ -1,38 +1,50 @@
 import { Power, PowerOff } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { worker } from '../mocks/browser'
 
-export default function MockControl() {
-  const [mockEnabled, setMockEnabled] = useState<boolean>(getLocalStorage('MSW'))
+const MSW_KEY = 'MSW'
+
+function useMockControl() {
+  const [mockEnabled, setMockEnabled] = useState(
+    JSON.parse(window.localStorage.getItem(MSW_KEY) || 'false'),
+  )
+
+  useEffect(() => {
+    if (mockEnabled) {
+      worker.start()
+    } else {
+      worker.stop()
+    }
+  }, [mockEnabled])
 
   const handleToggleMsw = () => {
     if (mockEnabled) {
-      setLocalStorage('false')
+      window.localStorage.setItem(MSW_KEY, JSON.stringify(false))
       setMockEnabled(false)
       worker.stop()
     } else {
-      setLocalStorage('true')
+      window.localStorage.setItem(MSW_KEY, JSON.stringify(true))
       setMockEnabled(true)
       worker.start()
     }
   }
 
+  return {
+    mockEnabled,
+    handleToggleMsw,
+  }
+}
+
+export default function MockControl() {
+  const { mockEnabled, handleToggleMsw } = useMockControl()
+
   return (
     <>
       {mockEnabled && <div className="mswEnabled"> MOCK SERVICE WORKER is ON!</div>}
-
       <div className="msw-toggle">
         <button onClick={handleToggleMsw}>{mockEnabled ? <Power /> : <PowerOff />}</button>
       </div>
     </>
   )
-}
-
-function setLocalStorage(value: string) {
-  window.localStorage.setItem('MSW', value)
-}
-
-function getLocalStorage(value: string) {
-  return !!window.localStorage.getItem(value)
 }

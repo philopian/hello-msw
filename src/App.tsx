@@ -1,34 +1,33 @@
+import { Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
 import './App.css'
 import MockControl from './components/MockControl'
 import config from './config'
 
-function App() {
-  const [lauchData, setLauchData] = useState([])
+export default function App() {
+  const [launchData, setLaunchData] = useState(null)
 
   const fetchSpaceXData = async () => {
     const response = await fetch(`${config.api.baseUrl}/launches/latest`)
     const data = await response.json()
-    console.log(data)
-    setLauchData(data)
+    setLaunchData(data)
   }
 
-  const clearData = () => {
-    setLauchData([])
-  }
+  const clearData = () => setLaunchData(null)
+
   return (
     <>
       <h2>Fetch SpaceX data</h2>
       <div>
         <button onClick={fetchSpaceXData}>Fetch SpaceX Launches</button>
-        <button onClick={clearData}>Clear</button>
+        <button onClick={clearData}>
+          <Trash2 size={16} />
+        </button>
       </div>
-      <pre>{JSON.stringify(lauchData, null, 2)}</pre>
+      {launchData && <pre>{JSON.stringify(launchData, null, 2)}</pre>}
 
       <MockControl />
     </>
   )
 }
-
-export default App

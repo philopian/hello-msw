@@ -66,3 +66,7 @@ pre{
   bottom: 10px;
   right: 10px;
 }
+
+button{
+  margin-right: 4px;
+}
